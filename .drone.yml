@@ -1,8 +1,21 @@
-pipeline:
-build:	
-image: maven:3-jdk-8
-commands: 
-- "mvn package -B"
-artifacts:
-paths:
-- target/*.jar
+#pipeline:
+#build:	
+#image: maven:3-jdk-8
+#commands: 
+#- "mvn package -B"
+#artifacts:
+#paths:
+#- target/*.jar
+
+
+kind: pipeline
+name: default
+workspace:
+  base: /tmp
+  path: "."
+steps:
+- name: build
+  image: maven:3-jdk-8
+  commands:
+    - "mvn package -B"
+
