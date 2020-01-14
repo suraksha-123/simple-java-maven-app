@@ -14,12 +14,27 @@ workspace:
   base: /tmp
   path: "."
 steps:
-- name: build
-  image: maven:3-jdk-8
+- name: build-push
+  pull: always
+  image: golang:1.11
   commands:
-    - "mvn package -B" 
+  - "go build -v -ldflags \"-X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/arm64/drone-s3"
+  environment:
+    CGO_ENABLED: 0
+    GO111MODULE: on
+  when:
+    event:
+    - push
+    - pull_request
 
-- name: publish
-  image: plugins/docker
-  repo: laszlocloud/java-app
-  tags: [ latest ]
+- name: build-tag
+  pull: always
+  image: golang:1.11
+  commands:
+  - "go build -v -ldflags \"-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}\" -a -o release/linux/arm64/drone-s3"
+  environment:
+    CGO_ENABLED: 0
+    GO111MODULE: on
+  when:
+    event:
+    - tag
