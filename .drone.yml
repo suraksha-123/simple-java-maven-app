@@ -19,3 +19,7 @@ steps:
   commands:
     - "mvn package -B" 
 
+- name: publish
+  image: plugins/docker
+  repo: laszlocloud/java-app
+  tags: [ latest ]
